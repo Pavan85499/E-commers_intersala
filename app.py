@@ -1,9 +1,39 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+# Initialize Flask app
 app = Flask(__name__)
 
+@app.route('/home')
+def index():
+   return render_templates('index.html')
+
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'  # Replace with your DB URI (e.g., 'mysql://user:password@localhost/dbname')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # To suppress deprecation warnings
+
+# Initialize SQLAlchemy
+db = SQLAlchemy(app)
+
+# Define a sample model (table)
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.name}>'
+
+# Create the database and tables
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+# Example route
 @app.route('/')
 def index():
-   return render_template('index.html')
+    return "Database connection is working!"
 
+# Run the app
 if __name__ == '__main__':
-   app.run(debug = True)
+    app.run(debug=True)
