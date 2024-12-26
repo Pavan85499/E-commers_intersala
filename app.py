@@ -6,9 +6,13 @@ def home():
    return render_template('index.html')
 
 
-@app.route('/Products')
-def Products():
+@app.route('/products')
+def products():
    return render_template("products.html")
+
+@app.route('/singleproduct')
+def singleproduct():
+   return render_template("singleproduct.html")
 
 @app.route('/about')
 def adout():
